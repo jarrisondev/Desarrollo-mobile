@@ -1,42 +1,83 @@
 import React, {useState} from 'react';
-import {View, Text, TextInput, TouchableOpacity, Alert} from 'react-native';
+import {View, Text, TextInput, TouchableOpacity, Alert, ScrollView} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {addTask, updateTask} from '../storage/Taskstorage';
 import {PRIORITY, COLORS} from '../utils/constants';
-import {Task, Priority} from '../utils/types';
+import {Task, NewTask, Priority} from '../utils/types';
 
 const priorityKeys = Object.keys(PRIORITY) as Priority[];
 
 const AddEditTaskScreen = ({route, navigation}: any) => {
   const existingTask: Task | null = route.params?.task ?? null;
-  const [title, setTitle] = useState(existingTask?.title || '');
-  const [priority, setPriority] = useState<Priority>(
-    existingTask?.priority || 'media',
-  );
+  const isEditing = !!existingTask;
+
+  const [task, setTask] = useState<NewTask>({
+    title: existingTask?.title || '',
+    description: existingTask?.description || '',
+    date: existingTask?.date || '',
+    time: existingTask?.time || '',
+    priority: existingTask?.priority || 'media',
+  });
+
+  const updateField = <K extends keyof NewTask>(field: K, value: NewTask[K]) => {
+    setTask((prev) => ({...prev, [field]: value}));
+  };
 
   const handleSave = async () => {
-    if (!title.trim()) {
+    if (!task.title.trim()) {
       Alert.alert('Error', 'El titulo de la tarea es obligatorio');
       return;
     }
 
-    if (existingTask) {
-      await updateTask(existingTask.id, {title: title.trim(), priority});
+    const trimmedTask = {...task, title: task.title.trim(), description: task.description.trim()};
+
+    if (isEditing) {
+      await updateTask(existingTask.id, trimmedTask);
     } else {
-      await addTask({title: title.trim(), priority});
+      await addTask(trimmedTask);
     }
 
     navigation.goBack();
   };
 
   return (
-    <View className="flex-1 bg-[#F5F5FA] p-5">
+    <ScrollView className="flex-1 bg-[#F5F5FA] p-5">
       <Text className="text-base font-semibold text-[#2D2D3A] mb-2 mt-4">Titulo</Text>
       <TextInput
         className="bg-white rounded-xl p-3.5 text-base text-[#2D2D3A] border border-[#E8E8EE]"
-        value={title}
-        onChangeText={setTitle}
+        value={task.title}
+        onChangeText={(v) => updateField('title', v)}
         placeholder="Escribe el titulo de la tarea"
+        placeholderTextColor={COLORS.textSecondary}
+      />
+
+      <Text className="text-base font-semibold text-[#2D2D3A] mb-2 mt-4">Descripcion</Text>
+      <TextInput
+        className="bg-white rounded-xl p-3.5 text-base text-[#2D2D3A] border border-[#E8E8EE]"
+        value={task.description}
+        onChangeText={(v) => updateField('description', v)}
+        placeholder="Descripcion de la tarea"
+        placeholderTextColor={COLORS.textSecondary}
+        multiline
+        numberOfLines={3}
+        textAlignVertical="top"
+      />
+
+      <Text className="text-base font-semibold text-[#2D2D3A] mb-2 mt-4">Fecha</Text>
+      <TextInput
+        className="bg-white rounded-xl p-3.5 text-base text-[#2D2D3A] border border-[#E8E8EE]"
+        value={task.date}
+        onChangeText={(v) => updateField('date', v)}
+        placeholder="DD/MM/AAAA"
+        placeholderTextColor={COLORS.textSecondary}
+      />
+
+      <Text className="text-base font-semibold text-[#2D2D3A] mb-2 mt-4">Hora</Text>
+      <TextInput
+        className="bg-white rounded-xl p-3.5 text-base text-[#2D2D3A] border border-[#E8E8EE]"
+        value={task.time}
+        onChangeText={(v) => updateField('time', v)}
+        placeholder="HH:MM"
         placeholderTextColor={COLORS.textSecondary}
       />
 
@@ -44,7 +85,7 @@ const AddEditTaskScreen = ({route, navigation}: any) => {
       <View className="flex-row gap-3">
         {priorityKeys.map((key) => {
           const p = PRIORITY[key];
-          const isSelected = priority === key;
+          const isSelected = task.priority === key;
           return (
             <TouchableOpacity
               key={key}
@@ -53,7 +94,7 @@ const AddEditTaskScreen = ({route, navigation}: any) => {
                 borderColor: p.color,
                 backgroundColor: isSelected ? p.color : 'transparent',
               }}
-              onPress={() => setPriority(key)}>
+              onPress={() => updateField('priority', key)}>
               <Icon
                 name={p.icon}
                 size={16}
@@ -70,13 +111,13 @@ const AddEditTaskScreen = ({route, navigation}: any) => {
       </View>
 
       <TouchableOpacity
-        className="bg-[#6C63FF] rounded-xl p-4 items-center mt-8"
+        className="bg-[#6C63FF] rounded-xl p-4 items-center mt-8 mb-8"
         onPress={handleSave}>
         <Text className="text-white text-lg font-bold">
-          {existingTask ? 'Actualizar' : 'Guardar'}
+          {isEditing ? 'Actualizar' : 'Guardar'}
         </Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 };
 

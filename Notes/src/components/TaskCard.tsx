@@ -43,6 +43,27 @@ const TaskCard = ({task, onDelete, onEdit}: TaskCardProps) => {
         <Text className="text-base font-medium text-[#2D2D3A]" numberOfLines={2}>
           {task.title}
         </Text>
+        {task.description ? (
+          <Text className="text-xs text-[#8E8E9A] mt-1" numberOfLines={1}>
+            {task.description}
+          </Text>
+        ) : null}
+        {(task.date || task.time) ? (
+          <View className="flex-row items-center mt-1.5 gap-2">
+            {task.date ? (
+              <View className="flex-row items-center gap-1">
+                <Icon name="calendar-outline" size={12} color={COLORS.textSecondary} />
+                <Text className="text-xs text-[#8E8E9A]">{task.date}</Text>
+              </View>
+            ) : null}
+            {task.time ? (
+              <View className="flex-row items-center gap-1">
+                <Icon name="clock-outline" size={12} color={COLORS.textSecondary} />
+                <Text className="text-xs text-[#8E8E9A]">{task.time}</Text>
+              </View>
+            ) : null}
+          </View>
+        ) : null}
       </View>
       <TouchableOpacity
         className="p-2"
