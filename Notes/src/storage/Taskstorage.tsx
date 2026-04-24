@@ -1,7 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {v4 as uuidv4} from 'uuid';
 import {STORAGE_KEY} from '../utils/constants';
+import {Task, NewTask} from '../utils/types';
 
-export const getTasks = async () => {
+export const getTasks = async (): Promise<Task[]> => {
   try {
     const jsonValue = await AsyncStorage.getItem(STORAGE_KEY);
     return jsonValue != null ? JSON.parse(jsonValue) : [];
@@ -11,7 +13,7 @@ export const getTasks = async () => {
   }
 };
 
-export const saveTasks = async (tasks: any[]) => {
+export const saveTasks = async (tasks: Task[]): Promise<boolean> => {
   try {
     const jsonValue = JSON.stringify(tasks);
     await AsyncStorage.setItem(STORAGE_KEY, jsonValue);
@@ -22,10 +24,14 @@ export const saveTasks = async (tasks: any[]) => {
   }
 };
 
-export const addTask = async (task: any) => {
+export const addTask = async (task: NewTask): Promise<Task[] | null> => {
   try {
     const tasks = await getTasks();
-    const newTask = {...task, id: Date.now().toString(), createdAt: new Date().toISOString()};
+    const newTask: Task = {
+      ...task,
+      id: uuidv4(),
+      createdAt: new Date().toISOString(),
+    };
     const updatedTasks = [...tasks, newTask];
     await saveTasks(updatedTasks);
     return updatedTasks;
@@ -35,10 +41,10 @@ export const addTask = async (task: any) => {
   }
 };
 
-export const updateTask = async (id: string, updatedFields: any) => {
+export const updateTask = async (id: string, updatedFields: Partial<NewTask>): Promise<Task[] | null> => {
   try {
     const tasks = await getTasks();
-    const updatedTasks = tasks.map((task: any) =>
+    const updatedTasks = tasks.map((task) =>
       task.id === id ? {...task, ...updatedFields} : task,
     );
     await saveTasks(updatedTasks);
@@ -49,10 +55,10 @@ export const updateTask = async (id: string, updatedFields: any) => {
   }
 };
 
-export const deleteTask = async (id: string) => {
+export const deleteTask = async (id: string): Promise<Task[] | null> => {
   try {
     const tasks = await getTasks();
-    const updatedTasks = tasks.filter((task: any) => task.id !== id);
+    const updatedTasks = tasks.filter((task) => task.id !== id);
     await saveTasks(updatedTasks);
     return updatedTasks;
   } catch (error) {
@@ -61,7 +67,7 @@ export const deleteTask = async (id: string) => {
   }
 };
 
-export const deleteAllTasks = async () => {
+export const deleteAllTasks = async (): Promise<Task[] | null> => {
   try {
     await AsyncStorage.removeItem(STORAGE_KEY);
     return [];

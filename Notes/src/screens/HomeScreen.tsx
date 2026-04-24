@@ -7,9 +7,10 @@ import TaskCard from '../components/TaskCard';
 import EmptyState from '../components/EmptyState';
 import {getTasks, deleteTask} from '../storage/Taskstorage';
 import {COLORS} from '../utils/constants';
+import {Task} from '../utils/types';
 
 const HomeScreen = ({navigation}: any) => {
-  const [tasks, setTasks] = useState<any[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
 
   useFocusEffect(
     useCallback(() => {
@@ -28,7 +29,7 @@ const HomeScreen = ({navigation}: any) => {
     }
   };
 
-  const handleEdit = (task: any) => {
+  const handleEdit = (task: Task) => {
     navigation.navigate('AddEditTask', {task});
   };
 

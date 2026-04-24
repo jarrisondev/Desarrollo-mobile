@@ -2,12 +2,7 @@ import React from 'react';
 import {View, Text, TouchableOpacity, Alert} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {PRIORITY, COLORS} from '../utils/constants';
-
-interface Task {
-  id: string;
-  title: string;
-  priority: keyof typeof PRIORITY;
-}
+import {Task} from '../utils/types';
 
 interface TaskCardProps {
   task: Task;

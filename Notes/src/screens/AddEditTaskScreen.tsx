@@ -3,13 +3,14 @@ import {View, Text, TextInput, TouchableOpacity, Alert} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {addTask, updateTask} from '../storage/Taskstorage';
 import {PRIORITY, COLORS} from '../utils/constants';
+import {Task, Priority} from '../utils/types';
 
-const priorityKeys = Object.keys(PRIORITY) as Array<keyof typeof PRIORITY>;
+const priorityKeys = Object.keys(PRIORITY) as Priority[];
 
 const AddEditTaskScreen = ({route, navigation}: any) => {
-  const existingTask = route.params?.task;
+  const existingTask: Task | null = route.params?.task ?? null;
   const [title, setTitle] = useState(existingTask?.title || '');
-  const [priority, setPriority] = useState<keyof typeof PRIORITY>(
+  const [priority, setPriority] = useState<Priority>(
     existingTask?.priority || 'media',
   );
 
