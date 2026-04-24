@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {v4 as uuidv4} from 'uuid';
-import {STORAGE_KEY} from '../utils/constants';
-import {Task, NewTask} from '../utils/types';
+import { v4 as uuidv4 } from 'uuid';
+import { STORAGE_KEY } from '../utils/constants';
+import { Task, NewTask } from '../utils/types';
 
 export const getTasks = async (): Promise<Task[]> => {
   try {
@@ -41,11 +41,14 @@ export const addTask = async (task: NewTask): Promise<Task[] | null> => {
   }
 };
 
-export const updateTask = async (id: string, updatedFields: Partial<NewTask>): Promise<Task[] | null> => {
+export const updateTask = async (
+  id: string,
+  updatedFields: Partial<NewTask>,
+): Promise<Task[] | null> => {
   try {
     const tasks = await getTasks();
-    const updatedTasks = tasks.map((task) =>
-      task.id === id ? {...task, ...updatedFields} : task,
+    const updatedTasks = tasks.map(task =>
+      task.id === id ? { ...task, ...updatedFields } : task,
     );
     await saveTasks(updatedTasks);
     return updatedTasks;
@@ -58,7 +61,7 @@ export const updateTask = async (id: string, updatedFields: Partial<NewTask>): P
 export const deleteTask = async (id: string): Promise<Task[] | null> => {
   try {
     const tasks = await getTasks();
-    const updatedTasks = tasks.filter((task) => task.id !== id);
+    const updatedTasks = tasks.filter(task => task.id !== id);
     await saveTasks(updatedTasks);
     return updatedTasks;
   } catch (error) {
