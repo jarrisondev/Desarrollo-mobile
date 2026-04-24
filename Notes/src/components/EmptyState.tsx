@@ -1,40 +1,20 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS} from '../utils/constants';
 
 const EmptyState = () => {
   return (
-    <View style={styles.container}>
+    <View className="flex-1 justify-center items-center px-8">
       <Icon name="calendar-blank-outline" size={100} color={COLORS.border} />
-      <Text style={styles.title}>No hay tareas</Text>
-      <Text style={styles.subtitle}>
+      <Text className="text-xl font-bold text-[#8E8E9A] text-center mt-4">
+        No hay tareas
+      </Text>
+      <Text className="text-sm text-[#8E8E9A] text-center mt-2">
         Dar click en el boton + para agregar una tarea
       </Text>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 32,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: COLORS.textSecondary,
-    textAlign: 'center',
-    marginTop: 16,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: COLORS.textSecondary,
-    textAlign: 'center',
-    marginTop: 8,
-  },
-});
 
 export default EmptyState;

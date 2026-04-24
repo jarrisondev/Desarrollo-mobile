@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, TextInput, TouchableOpacity, StyleSheet, Alert} from 'react-native';
+import {View, Text, TextInput, TouchableOpacity, Alert} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {addTask, updateTask} from '../storage/Taskstorage';
 import {PRIORITY, COLORS} from '../utils/constants';
@@ -29,29 +29,29 @@ const AddEditTaskScreen = ({route, navigation}: any) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.label}>Titulo</Text>
+    <View className="flex-1 bg-[#F5F5FA] p-5">
+      <Text className="text-base font-semibold text-[#2D2D3A] mb-2 mt-4">Titulo</Text>
       <TextInput
-        style={styles.input}
+        className="bg-white rounded-xl p-3.5 text-base text-[#2D2D3A] border border-[#E8E8EE]"
         value={title}
         onChangeText={setTitle}
         placeholder="Escribe el titulo de la tarea"
         placeholderTextColor={COLORS.textSecondary}
       />
 
-      <Text style={styles.label}>Prioridad</Text>
-      <View style={styles.priorityContainer}>
+      <Text className="text-base font-semibold text-[#2D2D3A] mb-2 mt-4">Prioridad</Text>
+      <View className="flex-row gap-3">
         {priorityKeys.map((key) => {
           const p = PRIORITY[key];
           const isSelected = priority === key;
           return (
             <TouchableOpacity
               key={key}
-              style={[
-                styles.priorityButton,
-                {borderColor: p.color},
-                isSelected && {backgroundColor: p.color},
-              ]}
+              className="flex-row items-center px-4 py-2.5 rounded-full border-2 gap-1.5"
+              style={{
+                borderColor: p.color,
+                backgroundColor: isSelected ? p.color : 'transparent',
+              }}
               onPress={() => setPriority(key)}>
               <Icon
                 name={p.icon}
@@ -59,10 +59,8 @@ const AddEditTaskScreen = ({route, navigation}: any) => {
                 color={isSelected ? '#FFF' : p.color}
               />
               <Text
-                style={[
-                  styles.priorityText,
-                  {color: isSelected ? '#FFF' : p.color},
-                ]}>
+                className="text-sm font-semibold"
+                style={{color: isSelected ? '#FFF' : p.color}}>
                 {p.label}
               </Text>
             </TouchableOpacity>
@@ -70,66 +68,15 @@ const AddEditTaskScreen = ({route, navigation}: any) => {
         })}
       </View>
 
-      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-        <Text style={styles.saveButtonText}>
+      <TouchableOpacity
+        className="bg-[#6C63FF] rounded-xl p-4 items-center mt-8"
+        onPress={handleSave}>
+        <Text className="text-white text-lg font-bold">
           {existingTask ? 'Actualizar' : 'Guardar'}
         </Text>
       </TouchableOpacity>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-    padding: 20,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: COLORS.textPrimary,
-    marginBottom: 8,
-    marginTop: 16,
-  },
-  input: {
-    backgroundColor: COLORS.surface,
-    borderRadius: 12,
-    padding: 14,
-    fontSize: 16,
-    color: COLORS.textPrimary,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-  },
-  priorityContainer: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  priorityButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 20,
-    borderWidth: 2,
-    gap: 6,
-  },
-  priorityText: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  saveButton: {
-    backgroundColor: COLORS.primary,
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-    marginTop: 32,
-  },
-  saveButtonText: {
-    color: '#FFF',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-});
 
 export default AddEditTaskScreen;
